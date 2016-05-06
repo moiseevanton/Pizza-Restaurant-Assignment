@@ -8,6 +8,14 @@
 
 #import "Pizza.h"
 
+@interface Pizza()
+
+@property (nonatomic, readwrite) PizzaSize size;
+
+@property (nonatomic, readwrite) NSArray *toppings;
+
+@end
+
 @implementation Pizza
 
 -(instancetype)init {

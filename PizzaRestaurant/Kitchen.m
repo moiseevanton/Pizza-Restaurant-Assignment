@@ -12,7 +12,30 @@
 
 - (Pizza *)makePizzaWithSize:(PizzaSize)size toppings:(NSArray *)toppings {
     
-    return [[Pizza alloc] initWithPizzaSize:size toppings:toppings];
+    if ([self.delegate kitchen:self shouldMakePizzaOfSize:size andToppings:toppings]) {
+        
+        if ([self.delegate kitchenShouldUpgradeOrder:self]) {
+            
+            Pizza *p = [[Pizza alloc] initWithPizzaSize:large toppings:toppings];
+            
+            if([self.delegate respondsToSelector:@selector(kitchenDidMakePizza:)]) {
+                
+                [self.delegate kitchenDidMakePizza:p];
+                
+            }
+            return p;
+        } else {
+            
+            Pizza *p = [[Pizza alloc] initWithPizzaSize:size toppings:toppings];
+            return p;
+            
+        }
+        
+    } else {
+        
+        return nil;
+        
+    }
 }
 
 @end

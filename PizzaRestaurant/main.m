@@ -7,20 +7,30 @@
 //
 
 #import <Foundation/Foundation.h>
-
 #import "Kitchen.h"
+#import "AnchoviesManager.h"
+#import "CheeryManager.h"
+#import "DeliveryService.h"
+
 
 int main(int argc, const char * argv[])
 {
 
     @autoreleasepool {
         
-        NSLog(@"Please pick your pizza size and toppings:");
-        
         Kitchen *restaurantKitchen = [Kitchen new];
+
+        AnchoviesManager *anchoviesManager = [[AnchoviesManager alloc] init];
+        
+        CheeryManager *cheeryManager = [[CheeryManager alloc] init];
+        
+        DeliveryService *service = [[DeliveryService alloc] init];
         
         while (TRUE) {
             // Loop forever
+            
+            NSLog(@"Please pick your pizza size and toppings:");
+            
             
             NSLog(@"> ");
             char str[100];
@@ -38,15 +48,40 @@ int main(int argc, const char * argv[])
             NSString *sizeAsString = commandWords[0];
             NSMutableArray *toppings = [[NSMutableArray alloc] initWithArray:commandWords];
             [toppings removeObjectAtIndex:0];
-            Pizza *ourPizza = nil;
-            if ([sizeAsString isEqualToString:@"small"]) {
-                ourPizza = [restaurantKitchen makePizzaWithSize:small toppings:toppings];
-            } else if ([sizeAsString isEqualToString:@"medium"]) {
-                ourPizza = [restaurantKitchen makePizzaWithSize:medium toppings:toppings];
-            } else if ([sizeAsString isEqualToString:@"large"]) {
-                ourPizza = [restaurantKitchen makePizzaWithSize:large toppings:toppings];
+            
+            NSLog(@"Pick your manager (enter one of two: anchoviesManager, cheeryManager) or no manager at all (enter: no).");
+            
+            NSLog(@"> ");
+            char str2[100];
+            fgets (str2, 100, stdin);
+            
+            NSString *inputString2 = [[NSString alloc] initWithUTF8String:str2];
+            inputString2 = [inputString2 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            
+            NSLog(@"Input was %@", inputString2);
+            
+            if ([inputString2 isEqualToString:@"anchoviesManager"]) {
+                
+                restaurantKitchen.delegate = anchoviesManager;
+                
+            } else if ([inputString2 isEqualToString:@"cheeryManager"]) {
+                
+                restaurantKitchen.delegate = cheeryManager;
+                cheeryManager.delegate = service;
+                
+            } else if ([inputString2 isEqualToString:@"no"]) {
+                
             }
             
+            Pizza *yourPizza = nil;
+            if ([sizeAsString isEqualToString:@"small"]) {
+                yourPizza = [restaurantKitchen makePizzaWithSize:small toppings:toppings];
+            } else if ([sizeAsString isEqualToString:@"medium"]) {
+                yourPizza = [restaurantKitchen makePizzaWithSize:medium toppings:toppings];
+            } else if ([sizeAsString isEqualToString:@"large"]) {
+                yourPizza = [restaurantKitchen makePizzaWithSize:large toppings:toppings];
+            }
+            NSLog(@"%@",service.allPizzas[0]);
         }
 
     }
